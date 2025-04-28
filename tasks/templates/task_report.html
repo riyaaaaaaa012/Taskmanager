@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container">
+    <h2 class="my-4">Task Analytics Report</h2>
+    
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="card text-white bg-primary">
+          <div class="card-body">
+            <h5 class="card-title">Total Tasks</h5>
+            <p class="card-text display-4">{{ total_count }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white bg-success">
+          <div class="card-body">
+            <h5 class="card-title">Completed</h5>
+            <p class="card-text display-4">{{ completed_count }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white bg-warning">
+          <div class="card-body">
+            <h5 class="card-title">Pending</h5>
+            <p class="card-text display-4">{{ pending_count }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Task Table -->
+    <div class="card">
+      <div class="card-header">
+        <h5>Task Details</h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-hover">
+          <thead class="thead-light">
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Status</th>
+              <th>Due Date</th>
+              <th>Days Left</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for task in tasks %}
+              <tr>
+                <td>{{ task.title }}</td>
+                <td>{{ task.description|truncatechars:50 }}</td>
+                <td>
+                  <span class="badge 
+                    {% if task.status == 'completed' %}bg-success
+                    {% else %}bg-warning text-dark{% endif %}">
+                    {{ task.status|title }}
+                  </span>
+                </td>
+                <td>{{ task.due_date|date:"M d, Y" }}</td>
+                <td>
+                  {% if task.status != 'completed' %}
+                    {{ task.due_date|timeuntil }}
+                  {% else %}
+                    <span class="text-muted">Completed</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5" class="text-center">No tasks found</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}
